@@ -50,7 +50,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,126,83):
+for ii in range(0,126,42):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -180,3 +180,5 @@ for ii in range(0,126,83):
     Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
     with open("re1.csv", 'a') as f:
         f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
+
+    # ccc
