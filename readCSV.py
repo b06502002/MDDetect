@@ -180,5 +180,3 @@ for ii in range(0,126,42):
     Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
     with open("re1.csv", 'a') as f:
         f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
-
-    # ccc
