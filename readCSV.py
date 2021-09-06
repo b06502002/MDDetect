@@ -177,6 +177,7 @@ for ii in range(0,126,83):
 
     I_Back = total_intens/(total_pixel_count-defect_pixel_count)
 
+    # comment1
     Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
     with open("re1.csv", 'a') as f:
         f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
