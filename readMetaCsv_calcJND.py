@@ -151,20 +151,19 @@ for ii in range(0,126,1):
     color = (255,200,200)#(200,200,200)
     lst_dfcts = []
     lst_bdbox = []
-    bdRect = []
 
     _, opening2 = cv2.threshold(opening, 127, 255, cv2.THRESH_BINARY)
     contours, hierarchy = cv2.findContours(opening2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
     flag = 0
-    for i in range(len(contours)):
+    for i in reversed(range(len(contours))):
         cimg,cimg2 = np.zeros_like(opening), np.zeros_like(opening)
         cv2.drawContours(cimg, contours, i, color, -1, cv2.LINE_8)
         pts = np.where(cimg == 255)
         lst_dfcts.append(img1[pts[0], pts[1]]) # record the intensity at the defect pixels
-        bdRect.append(cv2.boundingRect(contours[i]))
-        cv2.rectangle(cimg2, (int(bdRect[i][0]), int(bdRect[i][1])),\
-                      (int(bdRect[i][0]+bdRect[i][2]), int(bdRect[i][1]+bdRect[i][3])), 255, -1)
+        bdRect = cv2.boundingRect(contours[i])
+        cv2.rectangle(cimg2, (int(bdRect[0]), int(bdRect[1])),\
+                      (int(bdRect[0]+bdRect[2]), int(bdRect[1]+bdRect[3])), 255, -1)
         pts2 = np.where(cimg2 == 255)
         lst_bdbox.append(img1[pts2[0], pts2[1]])
 
@@ -175,8 +174,8 @@ for ii in range(0,126,1):
                 cX = int(M["m10"] / M["m00"])
                 cY = int(M["m01"] / M["m00"])
                 print(cX,cY)
-            # if abs(cX-55)<10 and abs(cY-55)<10: # "and" is NOT same as &
-            #     flag = 1   
+            if abs(cY-57)<10: # and abs(cX-55)<10: # "and" is NOT same as &
+                flag = 1
             
     total_pixel_count = img1.shape[0]*img1.shape[1]
     defect_pixel_count = 0
