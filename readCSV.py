@@ -50,7 +50,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,126,21):
+for ii in range(0,126,1):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -137,8 +137,8 @@ for ii in range(0,126,21):
     kernel = np.ones((2,2),np.uint8)
     opening = cv2.morphologyEx(BothT2, cv2.MORPH_OPEN, kernel)
     
-    plt.imshow(opening)
-    plt.show()
+    # plt.imshow(opening)
+    # plt.show()
 
     color = (255,200,200)#(200,200,200)
     lst_dfcts = []
@@ -179,4 +179,6 @@ for ii in range(0,126,21):
 
     Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
     with open("re1.csv", 'a') as f:
+        if ii == 0:
+            f.write("Pred, Real\n")
         f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
