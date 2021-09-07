@@ -7,6 +7,14 @@ import matplotlib.pyplot as plt
 import tifffile as tiff
 from matplotlib.pyplot import figure
 
+# This is description
+    # Ver1. 
+    # Read CSV file, and find the folder with the corresponding defect type.
+    # Select the image with the corresponding filename
+    # Find the defect bounded in .bmp file
+    # Get the JND of that defect
+
+
 basePath = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/2nd/0826_2nd/"
 csvPath = basePath + "table2.csv"
 
@@ -147,6 +155,8 @@ for ii in range(0,126,1):
 
     _, opening2 = cv2.threshold(opening, 127, 255, cv2.THRESH_BINARY)
     contours, hierarchy = cv2.findContours(opening2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    
+    flag = 0
     for i in range(len(contours)):
         cimg,cimg2 = np.zeros_like(opening), np.zeros_like(opening)
         cv2.drawContours(cimg, contours, i, color, -1, cv2.LINE_8)
@@ -159,11 +169,14 @@ for ii in range(0,126,1):
         lst_bdbox.append(img1[pts2[0], pts2[1]])
 
         M = cv2.moments(contours[i])
+        
         if M["m00"]!=0:
-            cX = int(M["m10"] / M["m00"])
-            cY = int(M["m01"] / M["m00"])
-            print(cX,cY)
-            
+            if flag == 0:
+                cX = int(M["m10"] / M["m00"])
+                cY = int(M["m01"] / M["m00"])
+                print(cX,cY)
+            # if abs(cX-55)<10 and abs(cY-55)<10: # "and" is NOT same as &
+            #     flag = 1   
             
     total_pixel_count = img1.shape[0]*img1.shape[1]
     defect_pixel_count = 0

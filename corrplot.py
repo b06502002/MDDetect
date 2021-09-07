@@ -4,4 +4,4 @@ import pandas as pd
 
 df = pd.read_csv('re1.csv')
 print(df)
-print(stats.spearmanr(df))#.Pred, df.Real))
+print(stats.spearmanr(df)) #.Pred, df.Real))
