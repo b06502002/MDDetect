@@ -152,26 +152,31 @@ for ii in range(0,126,1):
     contours, hierarchy = cv2.findContours(opening2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
     flag = 0
-    for i in reversed(range(len(contours))):
-        cimg,cimg2 = np.zeros_like(opening), np.zeros_like(opening)
-        cv2.drawContours(cimg, contours, i, color, -1, cv2.LINE_8)
-        pts = np.where(cimg == 255)
-        lst_dfcts.append(img1[pts[0], pts[1]]) # record the intensity at the defect pixels
-        bdRect = cv2.boundingRect(contours[i])
-        cv2.rectangle(cimg2, (int(bdRect[0]), int(bdRect[1])),\
-                      (int(bdRect[0]+bdRect[2]), int(bdRect[1]+bdRect[3])), 255, -1)
-        pts2 = np.where(cimg2 == 255)
-        lst_bdbox.append(img1[pts2[0], pts2[1]])
+    if len(contours) == 0: # This if-else should be replaced by better CV algorithms in later versions
+        continue
+    else:
+        for i in reversed(range(len(contours))):
+            cimg,cimg2 = np.zeros_like(opening), np.zeros_like(opening)
+            cv2.drawContours(cimg, contours, i, color, -1, cv2.LINE_8)
+            pts = np.where(cimg == 255)
+            lst_dfcts.append(img1[pts[0], pts[1]]) # record the intensity at the defect pixels
+            bdRect = cv2.boundingRect(contours[i])
+            cv2.rectangle(cimg2, (int(bdRect[0]), int(bdRect[1])),\
+                        (int(bdRect[0]+bdRect[2]), int(bdRect[1]+bdRect[3])), 255, -1)
+            pts2 = np.where(cimg2 == 255)
+            lst_bdbox.append(img1[pts2[0], pts2[1]])
 
-        M = cv2.moments(contours[i])
-        
-        if M["m00"]!=0:
-            if flag == 0:
-                cX = int(M["m10"] / M["m00"])
-                cY = int(M["m01"] / M["m00"])
-                print(cX,cY)
-            if abs(cY-57)<10: # and abs(cX-55)<10: # "and" is NOT same as &
-                flag = 1
+            M = cv2.moments(contours[i])
+            
+            if M["m00"]!=0:
+                if flag == 0:
+                    cX = int(M["m10"] / M["m00"])
+                    cY = int(M["m01"] / M["m00"])
+                    print(cX,cY)
+                if abs(cY-57)<10: # and abs(cX-55)<10: # "and" is NOT same as &
+                    flag = 1
+            else:
+                cX,cY = 0,0
             
     total_pixel_count = img1.shape[0]*img1.shape[1]
     defect_pixel_count = 0
@@ -184,7 +189,7 @@ for ii in range(0,126,1):
     total_intens = cv2.sumElems(img1)[0] - defect_intens
 
     I_Back = total_intens/(total_pixel_count-defect_pixel_count)
-
+    Max = max(I_Back,)
     Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
     with open("re1.csv", 'a') as f:
         if ii == 0:
