@@ -184,31 +184,12 @@ for ii in range(0,126,1):
             else:
                 cX,cY = 0,0
             
-    total_pixel_count = img1.shape[0]*img1.shape[1]
-    defect_pixel_count = 0
-    for i in range(len(lst_dfcts)):
-        defect_pixel_count += len(lst_dfcts[i])
-
-    defect_intens = 0
-    for i in range(len(lst_dfcts)):
-        defect_intens += sum(lst_dfcts[i])
-    total_intens = cv2.sumElems(img1)[0] - defect_intens
-
-    I_Back = total_intens/(total_pixel_count-defect_pixel_count)
+    
     roisum = cv2.sumElems(img1[cY-1:cY+1,cX-1:cY+1])
-    Max = max(I_Back,roisum[0]/9)
-    miN = min(I_Back,roisum[0]/9)
-    I_new = roisum[0]*255/(abs(roisum[0]-I_Back))
-    IB_new = I_Back*255/(abs(roisum[0]-I_Back))
-    # Max = max(I_Back,img1[cY,cX])
-    # miN = min(I_Back,img1[cY,cX])
-    # I_new = (img1[cY,cX])*(255/(abs(img1[cY,cX]-I_Back)))
-    # IB_new = (I_Back)*(255/(abs(img1[cY,cX]-I_Back)))
-    Contrast = abs(I_new-IB_new)/(I_new+IB_new)
+    MaX = roisum[0]/9
 
-    # I_Back = total_intens/(total_pixel_count-defect_pixel_count)
-    # Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
+    # Assume the JND is only related with the brightest grayscale value
     with open("re1.csv", 'a') as f:
         if ii == 0:
             f.write("Pred, Real\n")
-        f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
+        f.write(str(MaX)+", "+str(lst.RealJND[ii])+"\n")
