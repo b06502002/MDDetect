@@ -1,6 +1,5 @@
 import os
 import cv2
-import csv
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,11 +7,8 @@ import tifffile as tiff
 from matplotlib.pyplot import figure
 
 # This is description
-    # Ver1. 
-    # Read CSV file, and find the folder with the corresponding defect type.
-    # Select the image with the corresponding filename
-    # Find the defect bounded in .bmp file
-    # Get the JND of that defect
+    # 2021/09/08
+    # calculate normalized contrast
 
 
 basePath = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/2nd/0826_2nd/"
@@ -68,7 +64,7 @@ for ii in range(0,126,1):
             if ".bmp" in file_name:
                 fname = imgPath + file_name
                 img2 = cv2.imread(fname)
-        
+
     elif lst.Deftype[ii] == 'WSL48':
         for file_name in os.listdir(imgPath):
             if ("L48" in file_name) and (".tif" in file_name):
@@ -77,7 +73,7 @@ for ii in range(0,126,1):
             if ".bmp" in file_name:
                 fname = imgPath + file_name
                 img2 = cv2.imread(fname)
-                
+
     elif lst.Deftype[ii] == 'DWL48':
         for file_name in os.listdir(imgPath):
             if ("L48" in file_name) and (".tif" in file_name):
@@ -86,7 +82,7 @@ for ii in range(0,126,1):
             if ".bmp" in file_name:
                 fname = imgPath + file_name
                 img2 = cv2.imread(fname)
-                
+
     elif lst.Deftype[ii] == 'BSL48':
         for file_name in os.listdir(imgPath):
             if ("L48" in file_name) and (".tif" in file_name):
@@ -95,7 +91,7 @@ for ii in range(0,126,1):
             if ".bmp" in file_name:
                 fname = imgPath + file_name
                 img2 = cv2.imread(fname)
-                
+
     elif lst.Deftype[ii] == 'BSL128':
         for file_name in os.listdir(imgPath):
             if ("L128" in file_name) and (".tif" in file_name):
@@ -104,7 +100,7 @@ for ii in range(0,126,1):
             if ".bmp" in file_name:
                 fname = imgPath + file_name
                 img2 = cv2.imread(fname)
-                
+
     elif lst.Deftype[ii] == 'IRR':
         for file_name in os.listdir(imgPath):
             if ("L128" in file_name) and (".tif" in file_name):
@@ -117,11 +113,11 @@ for ii in range(0,126,1):
     print("Img #" + str(ii))
     x_min, x_max, y_min, y_max = bdcoord(img1)
     img4 = img2[y_min//2:y_max//2,x_min//2:x_max//2]
-    
+
     indices = np.where(np.all(img4 == [0,0,255], axis=-1))
     coords = zip(indices[0], indices[1])
     a = list(coords)[0]
-    
+
     img1 = img1[y_min:y_max,x_min:x_max]
 
     imgFloat = img1.astype('float')
@@ -130,13 +126,13 @@ for ii in range(0,126,1):
     coeff[3:][:]=0
     reconsImg = cv2.idct(coeff)
     diff = reconsImg-img1
-    
-    
+
+
     y_bd = min(2*a[0]+224,y_max)
     x_bd = min(2*a[1]+224,x_max)
     img1 = img1[2*a[0]:y_bd,2*a[1]:x_bd]
     diff = diff[2*a[0]:y_bd,2*a[1]:x_bd]
-    
+
     diff_n = cv2.normalize(diff, None, alpha = 0, beta = 255, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_8UC1)
     thresh1 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 45, 22)# obtain white Mura
     thresh2 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 45,-22)# obtain black Mura
