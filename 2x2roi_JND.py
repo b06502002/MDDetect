@@ -200,15 +200,11 @@ for ii in range(0,126,1):
     total_intens = cv2.sumElems(img1)[0] - defect_intens
 
     I_Back = total_intens/(total_pixel_count-defect_pixel_count)
-    # roisum = cv2.sumElems(img1[cY:cY+1,cX:cY+1])
-    # Max = max(I_Back,roisum[0]/4)
-    # miN = min(I_Back,roisum[0]/4)
-    # I_new = roisum[0]*255/(abs(roisum[0]-I_Back))
-    # IB_new = I_Back*255/(abs(roisum[0]-I_Back))
-    Max = max(I_Back,img1[cY,cX])
-    miN = min(I_Back,img1[cY,cX])
-    I_new = (img1[cY,cX])*(255/(abs(img1[cY,cX]-I_Back)))
-    IB_new = (I_Back)*(255/(abs(img1[cY,cX]-I_Back)))
+    roisum = cv2.sumElems(img1[cY:cY+1,cX:cX+1])
+    print(" ",img1[cY,cX],img1[cY+1,cX],img1[cY,cX+1],img1[cY+1,cX+1])
+    print(" ",roisum)
+    I_new = roisum[0]*255/(4*abs(roisum[0]-I_Back))
+    IB_new = I_Back*255/(abs(roisum[0]-I_Back))
     Contrast = abs(I_new-IB_new)/(I_new+IB_new)
 
     # I_Back = total_intens/(total_pixel_count-defect_pixel_count)
