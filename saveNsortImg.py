@@ -52,7 +52,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,2,1):
+for ii in range(0,126,1):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -137,10 +137,25 @@ for ii in range(0,2,1):
 
     if not os.path.exists(pathtoimg):
         os.mkdir(pathtoimg)
-    print(img1[52:58,52:58])
+    # print(img1[52:58,52:58])
+
     # img8bit = (img1).astype('uint8')
+
+
+    # img1_float = img1.astype('float')
+    # img1_float -= img1_float.min()
+    # img1_float /= img1_float.max()
+    # img1_float *= 255
+    # img8bit = img1_float.astype('uint8')
+
+    img1_float = img1.astype('float')
+    img1_float -= img1_float.min()
+    img1_float /= img1.max()
+    img1_float *= 255
+    img8bit = img1_float.astype('uint8')
+
     # print(img8bit[52:58:,52:58])
-    # cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img8bit)
+    cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img8bit)
 
     # with open("re1.csv", 'a') as f:
     #     if ii == 0:
