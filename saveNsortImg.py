@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import tifffile as tiff
-from matplotlib.pyplot import figure
-from skimage.util import img_as_ubyte
+
 # This is description
     # sort same images with same JND in the same file
 
@@ -53,7 +52,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,12,1):
+for ii in range(0,2,1):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -131,17 +130,17 @@ for ii in range(0,12,1):
     img1 = img1[2*a[0]:y_bd,2*a[1]:x_bd]
     # plt.imshow(img1)
     # plt.show()
-    
+
     directory = str(lst.RealJND[ii]).replace(".",'_')
-    parent_dir = "./img/"
+    parent_dir = "../img_not_for_sync/"
     pathtoimg = os.path.join(parent_dir, directory)
-    
+
     if not os.path.exists(pathtoimg):
         os.mkdir(pathtoimg)
-    
-
-    img8bit = img_as_ubyte(img1)
-    cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img8bit)
+    print(img1[52:58,52:58])
+    # img8bit = (img1).astype('uint8')
+    # print(img8bit[52:58:,52:58])
+    # cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img8bit)
 
     # with open("re1.csv", 'a') as f:
     #     if ii == 0:
