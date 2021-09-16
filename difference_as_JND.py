@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import tifffile as tiff
-from matplotlib.pyplot import figure
 
 # This is description
     # calculate contrast
@@ -188,17 +187,16 @@ for ii in range(0,126,1):
                     print(cX,cY)
                     break
             else:
-                print("Low Contrast Alert!!!\n")
                 cX,cY = 0,0
 
 
     bacc = img1[0:5:,0:5]
     I_Back = cv2.sumElems(bacc)[0]/25
     print(I_Back)
-    Contrast = abs(I_Back-img1[cY,cX])/(I_Back+img1[cY,cX])
+    Contrast = abs(I_Back-img1[cY,cX])
     print(Contrast)
     
-    with open("re3.csv", 'a') as f:
+    with open("re2.csv", 'a') as f:
         if ii == 0:
             f.write("Pred, Real\n")
-        f.write(str(Contrast)+", "+str(lst.JND[ii])+"\n")
+        f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
