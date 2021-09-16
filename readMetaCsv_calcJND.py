@@ -54,7 +54,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,126,1):
+for ii in range(0,12,1):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -142,7 +142,7 @@ for ii in range(0,126,1):
     diff = diff[2*a[0]:y_bd,2*a[1]:x_bd]
     # plt.imshow(diff)
     # plt.show()
-
+    
     diff_n = cv2.normalize(diff, None, alpha = 0, beta = 255, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_8UC1)
     thresh1 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 45, 22)# obtain white Mura
     thresh2 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 45,-22)# obtain black Mura
@@ -213,7 +213,7 @@ for ii in range(0,126,1):
 
     # I_Back = total_intens/(total_pixel_count-defect_pixel_count)
     # Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
-    with open("re1.csv", 'a') as f:
+    with open("re2.csv", 'a') as f:
         if ii == 0:
             f.write("Pred, Real\n")
         f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
