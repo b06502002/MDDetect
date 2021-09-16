@@ -117,14 +117,9 @@ for ii in range(0,126,1):
     print(lst.RealJND[ii])
     print("Img #" + str(ii))
 
-    M = np.amax(img1)
-    print((img1==65535).any(),(img1==0).any())
-    print(M)
-    if M > 1024:
-        break
+    #img1 = cv2.normalize(img1, dst=None, alpha=0, beta=1023, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
+    img1 *= 64
 
-    img1 = cv2.normalize(img1, dst=None, alpha=0, beta=65535, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
-    
     x_min, x_max, y_min, y_max = bdcoord(img1)
     img4 = img2[y_min//2:y_max//2,x_min//2:x_max//2]
 
@@ -141,7 +136,7 @@ for ii in range(0,126,1):
     # plt.show()
 
     directory = str(lst.RealJND[ii]).replace(".",'_')
-    parent_dir = "../img_not_for_sync_v3/"
+    parent_dir = "../img_not_for_sync_v5_x16/"
     pathtoimg = os.path.join(parent_dir, directory)
 
     if not os.path.exists(pathtoimg):
@@ -170,4 +165,4 @@ for ii in range(0,126,1):
     # print(img1[52:58,52:58])
     # plt.hist(img1.ravel(),4096,[0,1])
     # plt.show()
-    # cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img1)
+    cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img1)
