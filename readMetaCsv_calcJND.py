@@ -142,7 +142,7 @@ for ii in range(0,12,1):
     diff = diff[2*a[0]:y_bd,2*a[1]:x_bd]
     # plt.imshow(diff)
     # plt.show()
-    
+
     diff_n = cv2.normalize(diff, None, alpha = 0, beta = 255, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_8UC1)
     thresh1 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 45, 22)# obtain white Mura
     thresh2 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 45,-22)# obtain black Mura
@@ -200,20 +200,21 @@ for ii in range(0,12,1):
     total_intens = cv2.sumElems(img1)[0] - defect_intens
 
     I_Back = total_intens/(total_pixel_count-defect_pixel_count)
-    # roisum = cv2.sumElems(img1[cY:cY+1,cX:cY+1])
+    # roisum = cv2.sumElems(img1[cY:cY+1,cX:cX+1])
     # Max = max(I_Back,roisum[0]/4)
     # miN = min(I_Back,roisum[0]/4)
     # I_new = roisum[0]*255/(abs(roisum[0]-I_Back))
     # IB_new = I_Back*255/(abs(roisum[0]-I_Back))
-    Max = max(I_Back,img1[cY,cX])
-    miN = min(I_Back,img1[cY,cX])
-    I_new = (img1[cY,cX])*(255/(abs(img1[cY,cX]-I_Back)))
-    IB_new = (I_Back)*(255/(abs(img1[cY,cX]-I_Back)))
-    Contrast = abs(I_new-IB_new)/(I_new+IB_new)
-
+    # Max = max(I_Back,img1[cY,cX])
+    # miN = min(I_Back,img1[cY,cX])
+    # I_new = (img1[cY,cX])*(255/(abs(img1[cY,cX]-I_Back)))
+    # IB_new = (I_Back)*(255/(abs(img1[cY,cX]-I_Back)))
+    # Contrast = abs(I_new-IB_new)/(I_new+IB_new)
+    Contrast = abs(I_Back-img1[cY,cX])/(I_Back+img1[cY,cX])
+    print(Contrast)
     # I_Back = total_intens/(total_pixel_count-defect_pixel_count)
     # Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
-    with open("re2.csv", 'a') as f:
-        if ii == 0:
-            f.write("Pred, Real\n")
-        f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
+    # with open("re2.csv", 'a') as f:
+    #     if ii == 0:
+    #         f.write("Pred, Real\n")
+    #     f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
