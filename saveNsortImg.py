@@ -52,7 +52,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,6,1):
+for ii in range(0,126,1):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -116,6 +116,9 @@ for ii in range(0,6,1):
     print(lst.Chip_ID[ii])
     print(lst.RealJND[ii])
     print("Img #" + str(ii))
+
+    img1 = cv2.normalize(img1, dst=None, alpha=0, beta=65535, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
+    
     x_min, x_max, y_min, y_max = bdcoord(img1)
     img4 = img2[y_min//2:y_max//2,x_min//2:x_max//2]
 
@@ -132,7 +135,7 @@ for ii in range(0,6,1):
     # plt.show()
 
     directory = str(lst.RealJND[ii]).replace(".",'_')
-    parent_dir = "../img_not_for_sync_v2/"
+    parent_dir = "../img_not_for_sync_v3/"
     pathtoimg = os.path.join(parent_dir, directory)
 
     if not os.path.exists(pathtoimg):
@@ -152,14 +155,13 @@ for ii in range(0,6,1):
     # img1_float /= img1.max()
     # img1_float *= 255
     # img8bit = img1_float.astype('uint8')
-    img1 = cv2.normalize(img1, dst=None, alpha=0, beta=65535, norm_type=cv2.NORM_MINMAX) # shift
 
-    print(img1[52:58:,52:58])
-    plt.hist(img1.ravel(),256,[0,65536])
-    plt.show()
+    # print(img1[52:58:,52:58])
+    # img1[0,:] = 0
+    # img1[:,0] = 65535
+    # img1 = cv2.normalize(img1, dst=None, alpha=0, beta=65535, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
+    
+    print(img1[52:58,52:58])
+    # plt.hist(img1.ravel(),4096,[0,1])
+    # plt.show()
     cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img1)
-
-    # with open("re1.csv", 'a') as f:
-    #     if ii == 0:
-    #         f.write("Pred, Real\n")
-    #     f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
