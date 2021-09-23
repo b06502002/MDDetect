@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import tifffile as tiff
 
 # This is description
@@ -52,61 +51,43 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(90,96,1):
+for ii in range(0,126,1):
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
             if ("L128" in file_name) and (".tif" in file_name):
                 fname = imgPath + file_name
                 img1 = tiff.imread(fname)
-            if ".bmp" in file_name:
-                fname = imgPath + file_name
-                img2 = cv2.imread(fname)
 
     elif lst.Deftype[ii] == 'WSL48':
         for file_name in os.listdir(imgPath):
             if ("L48" in file_name) and (".tif" in file_name):
                 fname = imgPath + file_name
                 img1 = tiff.imread(fname)
-            if ".bmp" in file_name:
-                fname = imgPath + file_name
-                img2 = cv2.imread(fname)
 
     elif lst.Deftype[ii] == 'DWL48':
         for file_name in os.listdir(imgPath):
             if ("L48" in file_name) and (".tif" in file_name):
                 fname = imgPath + file_name
                 img1 = tiff.imread(fname)
-            if ".bmp" in file_name:
-                fname = imgPath + file_name
-                img2 = cv2.imread(fname)
 
     elif lst.Deftype[ii] == 'BSL48':
         for file_name in os.listdir(imgPath):
             if ("L48" in file_name) and (".tif" in file_name):
                 fname = imgPath + file_name
                 img1 = tiff.imread(fname)
-            if ".bmp" in file_name:
-                fname = imgPath + file_name
-                img2 = cv2.imread(fname)
 
     elif lst.Deftype[ii] == 'BSL128':
         for file_name in os.listdir(imgPath):
             if ("L128" in file_name) and (".tif" in file_name):
                 fname = imgPath + file_name
                 img1 = tiff.imread(fname)
-            if ".bmp" in file_name:
-                fname = imgPath + file_name
-                img2 = cv2.imread(fname)
 
     elif lst.Deftype[ii] == 'IRR':
         for file_name in os.listdir(imgPath):
             if ("L128" in file_name) and (".tif" in file_name):
                 fname = imgPath + file_name
                 img1 = tiff.imread(fname)
-            if ".bmp" in file_name:
-                fname = imgPath + file_name
-                img2 = cv2.imread(fname)
     # obtain variables img1 and img2
         # img1 is .tif
         # img2 is .bmp
@@ -117,53 +98,6 @@ for ii in range(90,96,1):
     print(lst.RealJND[ii])
     print("Img #" + str(ii))
 
-    print(img1[52:58,52:58])
-    #img1 = cv2.normalize(img1, dst=None, alpha=0, beta=1023, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
-    img1 *= 64
-
-    x_min, x_max, y_min, y_max = bdcoord(img1)
-    img4 = img2[y_min//2:y_max//2,x_min//2:x_max//2]
-
-    indices = np.where(np.all(img4 == [0,0,255], axis=-1)) # find the Blue pixels (the bounding box)
-    coords = zip(indices[0], indices[1])
-    a = list(coords)[0]
-
-    img1 = img1[y_min:y_max,x_min:x_max]
+    with open("re4_max_gray.csv", 'a') as f:
+            f.write(str(np.amax(img1))+"\n")
     
-    y_bd = min(2*a[0]+224,y_max)
-    x_bd = min(2*a[1]+224,x_max)
-    img1 = img1[2*a[0]:y_bd,2*a[1]:x_bd]
-    # plt.imshow(img1)
-    # plt.show()
-
-    directory = str(lst.RealJND[ii]).replace(".",'_')
-    parent_dir = "../img_not_for_sync_v1/"
-    pathtoimg = os.path.join(parent_dir, directory)
-
-    if not os.path.exists(pathtoimg):
-        os.mkdir(pathtoimg)
-
-    # img8bit = (img1).astype('uint8')
-
-
-    # img1_float = img1.astype('float')
-    # img1_float -= img1_float.min()
-    # img1_float /= img1_float.max()
-    # img1_float *= 255
-    # img8bit = img1_float.astype('uint8')
-
-    # img1_float = img1.astype('float')
-    # img1_float -= img1_float.min()
-    # img1_float /= img1.max()
-    # img1_float *= 255
-    # img8bit = img1_float.astype('uint8')
-
-    # print(img1[52:58:,52:58])
-    # img1[0,:] = 0
-    # img1[:,0] = 65535
-    # img1 = cv2.normalize(img1, dst=None, alpha=0, beta=65535, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
-    
-    # print(img1[52:58,52:58])
-    # plt.hist(img1.ravel(),4096,[0,1])
-    # plt.show()
-    # cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".png", img1)
