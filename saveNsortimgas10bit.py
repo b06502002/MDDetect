@@ -1,3 +1,4 @@
+import pgmagick as pgm
 import os
 import cv2
 import numpy as np
@@ -144,28 +145,8 @@ for ii in range(0,126,1):
     if not os.path.exists(pathtoimg):
         os.mkdir(pathtoimg)
 
-    # img8bit = (img1).astype('uint8')
+    iimmgg = pgm.Image(img1)
+    cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".tif", iimmgg)
 
-
-    # img1_float = img1.astype('float')
-    # img1_float -= img1_float.min()
-    # img1_float /= img1_float.max()
-    # img1_float *= 255
-    # img8bit = img1_float.astype('uint8')
-
-    # img1_float = img1.astype('float')
-    # img1_float -= img1_float.min()
-    # img1_float /= img1.max()
-    # img1_float *= 255
-    # img8bit = img1_float.astype('uint8')
-
-    # print(img1[52:58:,52:58])
-    # img1[0,:] = 0
-    # img1[:,0] = 65535
-    # img1 = cv2.normalize(img1, dst=None, alpha=0, beta=65535, norm_type=cv2.NORM_MINMAX) # renormalize can exaggerate the original defect severeness
-    
-    # print(img1[52:58,52:58])
-    # plt.hist(img1.ravel(),4096,[0,1])
-    # plt.show()
-    img1 = img1.astype(np.uint10)
-    cv2.imwrite(pathtoimg+"/"+str(lst.Chip_ID[ii])+".tif", img1)
+    #save_path = os.path.join(saveDir,'.'.join([filename,'dpx']))
+    # img.write(save_path)
