@@ -4,21 +4,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import tifffile as tiff
-from matplotlib.pyplot import figure
+# from matplotlib.pyplot import figure
 
 # This is description
     # calculate contrast
     # based on the center of mass of extracted defects
 
 basePath = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/2nd/0826_2nd/"
-csvPath = basePath + "table2.csv"
-
+csvPath = basePath + "table4.csv" # table4 is sorted through JND
 
 def bdcoord(img):
     # This function finds the boundary of the LCD
     _, img3 = cv2.threshold(img,127,255,0)
     x_min,x_max,y_min,y_max = 0,len(img[0]),0,len(img[:,0])
-    ct = 0
     
     for i in range(len(img3[:,0])):
         if np.count_nonzero(img3[i,:]==255) > len(img3[:,0])*2//3:
@@ -54,7 +52,7 @@ def bdcoord(img):
 
 lst = pd.read_csv(csvPath)
 
-for ii in range(0,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not included)
+for ii in range(104,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not included)
     imgPath = basePath + lst.Deftype[ii] +'/'+ lst.Chip_ID[ii] +'/'
     if lst.Deftype[ii] == 'WSL128':
         for file_name in os.listdir(imgPath):
@@ -109,21 +107,25 @@ for ii in range(0,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not includ
             if ".bmp" in file_name:
                 fname = imgPath + file_name
                 img2 = cv2.imread(fname)
+    
     # obtain variables img1 and img2
-        # img1 is .tif
+        # img1 is .tif (should be 10 bit, but the image is stored in 16 bit)
         # img2 is .bmp
         # we use img2 to find the approximate location of defect
+    
     print("===============")
     print(lst.Chip_ID[ii])
     print("Img #" + str(ii))
+
+    # obtain the boundary of the LCD and crop it
     x_min, x_max, y_min, y_max = bdcoord(img1)
     img4 = img2[y_min//2:y_max//2,x_min//2:x_max//2]
+    img1 = img1[y_min:y_max,x_min:x_max]
 
-    indices = np.where(np.all(img4 == [0,0,255], axis=-1)) # find the Blue pixels (the bounding box)
+    # find the Blue pixels (the bounding box) from the predicted img
+    indices = np.where(np.all(img4 == [0,0,255], axis=-1))
     coords = zip(indices[0], indices[1])
     a = list(coords)[0]
-
-    img1 = img1[y_min:y_max,x_min:x_max]
     
     # DCT
     imgFloat = img1.astype('float')
@@ -132,18 +134,17 @@ for ii in range(0,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not includ
     coeff[3:][:]=0
     reconsImg = cv2.idct(coeff)
     diff = reconsImg-img1
-
+    # print(img1[152:158:,152:158])
+    # print(diff[152:158:,152:158].min())
+    # print(reconsImg[152:158:,152:158])
+    # diff could have negative values in it
 
     y_bd = min(2*a[0]+224,y_max)
     x_bd = min(2*a[1]+224,x_max)
     img1 = img1[2*a[0]:y_bd,2*a[1]:x_bd]
-    # plt.imshow(img1)
-    # plt.show()
     diff = diff[2*a[0]:y_bd,2*a[1]:x_bd]
-    # plt.imshow(diff)
-    # plt.show()
-
-    diff_n = cv2.normalize(diff, None, alpha = 0, beta = 255, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_8UC1)
+    diff_n = diff + (-1)**(diff.min()>0)*abs(diff.min())
+    # opencv adaptive threshold takes 8 bit as input
     thresh1 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 45, 22)# obtain white Mura
     thresh2 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 45,-22)# obtain black Mura
     BothT = thresh1+thresh2
@@ -151,8 +152,8 @@ for ii in range(0,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not includ
     kernel = np.ones((2,2),np.uint8)
     opening = cv2.morphologyEx(BothT2, cv2.MORPH_OPEN, kernel)
     
-    # plt.imshow(opening)
-    # plt.show()
+    plt.imshow(opening,cmap='gray')
+    plt.show()
 
     color = (255,200,200)#(200,200,200)
     lst_dfcts = []
@@ -188,7 +189,7 @@ for ii in range(0,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not includ
                     break
             else:
                 cX,cY = 0,0
-            
+    
     total_pixel_count = img1.shape[0]*img1.shape[1]
     defect_pixel_count = 0
     for i in range(len(lst_dfcts)):
@@ -207,7 +208,7 @@ for ii in range(0,106,1): # img #1 to img #106 are JND below 3.5 (3.5 not includ
 
     # I_Back = total_intens/(total_pixel_count-defect_pixel_count)
     # Contrast = abs(img1[cY,cX]-I_Back)/(img1[cY,cX]+I_Back)
-    with open("re1.csv", 'a') as f:
+    with open("re/reN1.csv", 'a') as f:
         if ii == 0:
             f.write("Pred, Real\n")
         f.write(str(Contrast)+", "+str(lst.RealJND[ii])+"\n")
