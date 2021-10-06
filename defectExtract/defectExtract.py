@@ -23,27 +23,19 @@ def main(pathh):
     plt.imshow(Bimg,cmap='gray')
     plt.show()
 
-    for ii in range(ed-st):
+    for ii in range(1):
         diff = imgLst[ii]-Bimg
         plt.imshow(diff,cmap='gray')
         plt.show()
-        # grad_x = cv2.Sobel(imgLst[ii], ddepth, 1, 0, ksize=5, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
-        # grad_y = cv2.Sobel(imgLst[ii], ddepth, 0, 1, ksize=5, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
-        # abs_grad_x = cv2.convertScaleAbs(grad_x)
-        # abs_grad_y = cv2.convertScaleAbs(grad_y)
-        # grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
-        # plt.imshow(grad)
-        # plt.show()
-
         diff_n = cv2.normalize(diff, None, alpha = 0, beta = 255, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_8UC1)
-        cv2.imwrite('/home/cov/Desktop/PML/progress report/2021 Oct 1/'+'{}.jpg'.format(ii), diff_n)
+        #cv2.imwrite('/home/cov/Desktop/PML/progress report/2021 Oct 1/'+'{}.jpg'.format(ii), diff_n)
         thresh1 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 51, 25)# obtain white Mura
         thresh2 = cv2.adaptiveThreshold(diff_n, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51,-25)# obtain black Mura
         BothT = thresh1+thresh2
         BothT2 = cv2.medianBlur(BothT, 7)
         kernel = np.ones((2,2),np.uint8)
         opening = cv2.morphologyEx(BothT2, cv2.MORPH_OPEN, kernel)
-        cv2.imwrite('/home/cov/Desktop/PML/progress report/2021 Oct 1/'+'{}t.jpg'.format(ii), opening)
+        #cv2.imwrite('/home/cov/Desktop/PML/progress report/2021 Oct 1/'+'{}t.jpg'.format(ii), opening)
         plt.imshow(opening,cmap='gray')
         plt.show()
 
