@@ -19,7 +19,7 @@ def DCTprocess(IMG,Rlb,Rub,Clb,Cub,Clb2,Cub2):
     reconsImgforCV /= reconsImgforCV.max()
     reconsImgforCV *= 255
     reconsImgforCV = reconsImgforCV.astype('uint8')
-    return reconsImgforCV
+    return reconsImgforCV, cv2.dct(imgFloat)
 
 def CropImg(IMG):
     canny_output = cv2.Canny(IMG, 10, 255)
@@ -55,7 +55,7 @@ def main(pathh,pathtoimg):
     cv2.createTrackbar('dctRCoeff_lb', 'trackbar', 0, 60, nothing)
     cv2.createTrackbar('dctRCoeff_ub', 'trackbar', 0, 60, nothing)
     cv2.createTrackbar('adaptive_c','trackbar', 0,100, nothing)
-    cv2.createTrackbar('adaptive_kernelsize', 'trackbar', 0,30, nothing)
+    cv2.createTrackbar('adaptive_kernelsize', 'trackbar', 0,100, nothing)
     cv2.createTrackbar('median_kernelsize', 'trackbar', 0,30, nothing)
     cv2.createTrackbar('opening_kernelsize', 'trackbar', 0,30, nothing)
     cv2.createTrackbar('median_kernelsize2', 'trackbar', 0,30, nothing)
@@ -79,7 +79,7 @@ def main(pathh,pathtoimg):
 
         i1 = cv2.getTrackbarPos('Img1', 'trackbar')
         img1 = cv2.imread(pathh+lst.fname[i1], cv2.IMREAD_GRAYSCALE)
-        reconsImgforCV1 = DCTprocess(img1,Rlb,Rub,Clb,Cub,Clb2,Cub2)
+        reconsImgforCV1, _ = DCTprocess(img1,Rlb,Rub,Clb,Cub,Clb2,Cub2)
         thresImg = thres(reconsImgforCV1, adpc, 2*adpk+3, 2*medk+1, 2*medk2+1, opk+2)
         # np.savetxt('./re/outputMat.txt', reconsImgforCV1, fmt='%.2e', delimiter=' ', newline='\n', header='', footer='', comments='# ')
 
