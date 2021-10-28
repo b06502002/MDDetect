@@ -9,7 +9,7 @@ def main(pathh,pathtolll0):
     csvPath = pathh + "filenames.csv"
     lst = pd.read_csv(csvPath)
     lll0 = pd.read_csv(pathtolll0)
-    for ii in range(50,57,1): #311
+    for ii in range(200,207,1): #311
         img1 = cv2.imread(pathh+lst.fname[ii], cv2.IMREAD_GRAYSCALE)
         imgFloat = img1.astype('float')
         coeff = cv2.dct(imgFloat)

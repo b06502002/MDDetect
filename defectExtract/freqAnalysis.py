@@ -13,7 +13,7 @@ def trunc(values, decs=0):
 
 def main(pathh,pathtoimg):
     npary = np.zeros((1212,904))
-    for ii in range(50,57,1):
+    for ii in range(200,207,1):
         csvPath = pathh + "filenames.csv"
         lst = pd.read_csv(csvPath)
         
