@@ -11,7 +11,7 @@ def main(pathh):
     imgLst = []
     flagg = 0
     st = 288
-    ed = 309
+    ed = 301
     for ii in range(st,ed):
         imgLst.append(cv2.imread(pathh+lst.fname[ii], cv2.IMREAD_GRAYSCALE))
         if flagg == 0:
@@ -23,7 +23,7 @@ def main(pathh):
     plt.imshow(Bimg,cmap='gray')
     plt.show()
 
-    for ii in range(1):
+    for ii in range(11):
         diff = imgLst[ii]-Bimg
         plt.imshow(diff,cmap='gray')
         plt.show()

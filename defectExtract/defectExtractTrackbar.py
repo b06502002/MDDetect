@@ -8,12 +8,12 @@ import matplotlib.pyplot as plt
 def nothing(x):
     pass
 
-def DCTprocess(IMG,Rlb,Rub,Clb,Cub,Clb2,Cub2):
+def DCTprocess(IMG,Rlb,Rub,Rlb2,Rub2,Clb,Cub,Clb2,Cub2):
     imgFloat = IMG.astype('float')
     coeff = cv2.dct(imgFloat)
-    coeff[:,Rlb:Rub]=0
-    coeff[Clb:Cub][:]=0
-    coeff[Clb2:Cub2][:]=0
+    # coeff[:,Rlb:Rub]=0
+    coeff[Clb:Cub,Rlb:Rub]=0
+    coeff[Clb2:Cub2,Rlb2:Rub2]=0
     reconsImg = cv2.idct(coeff)
     reconsImgforCV = reconsImg - reconsImg.min()
     reconsImgforCV /= reconsImgforCV.max()
@@ -52,8 +52,10 @@ def main(pathh,pathtoimg):
     cv2.createTrackbar('dctCCoeff_ub', 'trackbar', 0, 1000, nothing)
     cv2.createTrackbar('dctCCoeff_lb2', 'trackbar', 0, 1000, nothing)
     cv2.createTrackbar('dctCCoeff_ub2', 'trackbar', 0, 1000, nothing)
-    cv2.createTrackbar('dctRCoeff_lb', 'trackbar', 0, 60, nothing)
-    cv2.createTrackbar('dctRCoeff_ub', 'trackbar', 0, 60, nothing)
+    cv2.createTrackbar('dctRCoeff_lb', 'trackbar', 0, 900, nothing)
+    cv2.createTrackbar('dctRCoeff_ub', 'trackbar', 0, 900, nothing)
+    cv2.createTrackbar('dctRCoeff_lb2', 'trackbar', 0, 900, nothing)
+    cv2.createTrackbar('dctRCoeff_ub2', 'trackbar', 0, 900, nothing)
     cv2.createTrackbar('adaptive_c','trackbar', 0,100, nothing)
     cv2.createTrackbar('adaptive_kernelsize', 'trackbar', 0,100, nothing)
     cv2.createTrackbar('median_kernelsize', 'trackbar', 0,30, nothing)
@@ -71,6 +73,8 @@ def main(pathh,pathtoimg):
         Cub2 = cv2.getTrackbarPos('dctCCoeff_ub2', 'trackbar')
         Rlb = cv2.getTrackbarPos('dctRCoeff_lb', 'trackbar')
         Rub = cv2.getTrackbarPos('dctRCoeff_ub', 'trackbar')
+        Rlb2 = cv2.getTrackbarPos('dctRCoeff_lb2', 'trackbar')
+        Rub2 = cv2.getTrackbarPos('dctRCoeff_ub2', 'trackbar')
         adpc = cv2.getTrackbarPos('adaptive_c','trackbar')
         adpk = cv2.getTrackbarPos('adaptive_kernelsize','trackbar')
         medk = cv2.getTrackbarPos('median_kernelsize','trackbar')
@@ -79,7 +83,7 @@ def main(pathh,pathtoimg):
 
         i1 = cv2.getTrackbarPos('Img1', 'trackbar')
         img1 = cv2.imread(pathh+lst.fname[i1], cv2.IMREAD_GRAYSCALE)
-        reconsImgforCV1, _ = DCTprocess(img1,Rlb,Rub,Clb,Cub,Clb2,Cub2)
+        reconsImgforCV1, _ = DCTprocess(img1,Rlb,Rub,Rlb2,Rub2,Clb,Cub,Clb2,Cub2)
         thresImg = thres(reconsImgforCV1, adpc, 2*adpk+3, 2*medk+1, 2*medk2+1, opk+2)
         # np.savetxt('./re/outputMat.txt', reconsImgforCV1, fmt='%.2e', delimiter=' ', newline='\n', header='', footer='', comments='# ')
 

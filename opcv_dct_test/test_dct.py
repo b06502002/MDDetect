@@ -6,12 +6,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def main(patH):
-    img1 = cv2.imread(patH+'stripe'+'.png',cv2.IMREAD_GRAYSCALE)
+    img1 = cv2.imread(patH+'stripe_scale_x2_5'+'.png',cv2.IMREAD_GRAYSCALE)
     imgFloat = img1.astype('float')
     coeff = cv2.dct(imgFloat)
     plt.imshow(coeff[0:50,0:50],cmap='gray')
     plt.show()
-    cv2.imwrite(patH+'stripe_coeff.png',coeff)
+    cv2.imwrite(patH+'stripe_scale_x2_5_coeff.png',coeff)
     coeff[:,0] = 0
     reconsImg = cv2.idct(coeff)
     # plt.imshow(reconsImg,cmap='gray')
