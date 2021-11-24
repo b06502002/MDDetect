@@ -54,14 +54,15 @@ def test(pathh):
                 comparison += img1[pt[jj][1]-3,pt[jj][0]+3]
 
         if len(pt)-ct1==0 or len(pt)==0:
-            print(ii,"is cell line:", sum1>comparison)
-        else:
-            print(ii,"is cell line:",(sum1/len(pt))>comparison/(len(pt)-ct1))
-        
+            print(sum1>comparison)
+            # print(ii,"is cell line:", sum1>comparison)
+        else:   
+            print((sum1/len(pt))>comparison/(len(pt)-ct1))
+            # print(ii,"is cell line:",(sum1/len(pt))>comparison/(len(pt)-ct1))         
         if sum1>comparison:
             ct_for_acc += 1
-        cv2.imshow('image',img1)
-        cv2.waitKey(0)
+        # cv2.imshow('image',img1)
+        # cv2.waitKey(0)
         # print(img1)
     
     print("prediction accuarcy: ",ct_for_acc/len(lst),"# cell line: ",ct_for_acc)
@@ -91,7 +92,7 @@ def main(pathh,pathtoimg):
 
 
 if __name__ == "__main__":
-    patH = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/maskrcnn_label_data/mura_image_CL/"#mura_image_BandBlob/"#
+    patH = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/maskrcnn_label_data/mura_image_BandBlob/" #mura_image_CL/"#
     patH2 = "/home/cov/Desktop/codefiles/python files here/projects/PML/img_NFS_Contour/cl/"
     #main(patH, patH2)
     test(patH)

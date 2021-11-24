@@ -10,8 +10,8 @@ def main(pathh):
     lst = pd.read_csv(csvPath)
     imgLst = []
     flagg = 0
-    st = 288
-    ed = 301
+    st = 112
+    ed = 119
     for ii in range(st,ed):
         imgLst.append(cv2.imread(pathh+lst.fname[ii], cv2.IMREAD_GRAYSCALE))
         if flagg == 0:
@@ -23,7 +23,7 @@ def main(pathh):
     plt.imshow(Bimg,cmap='gray')
     plt.show()
 
-    for ii in range(11):
+    for ii in range(7):
         diff = imgLst[ii]-Bimg
         plt.imshow(diff,cmap='gray')
         plt.show()
@@ -42,5 +42,6 @@ def main(pathh):
     return 0
 
 if __name__ == "__main__":
-    patH = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/maskrcnn_label_data/mura_image_data/"
+    # patH = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/maskrcnn_label_data/mura_image_data/"
+    patH = "/home/cov/Desktop/PML/project1_Mura/AUO_Data/maskrcnn_label_data/mura_image_BandBlob/"
     main(patH)
