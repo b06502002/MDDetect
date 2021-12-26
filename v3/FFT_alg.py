@@ -2,6 +2,9 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
+###
+    # This version searches for rainbow pattern in the color space, and then extract and remove the Fourier spectrum of the rainbow pattern.
+
 def notch_reject_filter(shape, d0=9, u_k=0, v_k=0):
     P, Q = shape
     H = np.zeros((P, Q))
